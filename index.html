@@ -121,6 +121,38 @@ details[open] summary::after{content:"–"}
 .confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .notice{background:var(--ink-soft);color:var(--fg);border-radius:12px;padding:12px 14px;font-size:.95rem}
 
+.btn,.opt,.seat,.radio label{min-height:44px}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--pa-soft);color:var(--pa)}
+.pill.pic{background:var(--pb-soft);color:var(--pb)}
+.end{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+.end .pct{font-family:var(--display);font-size:2.4rem;font-weight:800;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* Interruptor */
+.switch{flex-direction:row;align-items:center;gap:12px;min-height:44px;cursor:pointer;font-size:1rem;font-weight:600;position:relative}
+.switch input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.track{flex-shrink:0;width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.track::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
+.switch input:checked + .track{background:var(--pb)}
+.switch input:checked + .track::after{transform:translateX(20px)}
+.switch input:focus-visible + .track{outline:3px solid var(--ink);outline-offset:2px}
+.switch input:disabled ~ *{opacity:.5}
+
+/* Nossa história */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .big{font-family:var(--display);font-size:1.5rem;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .lbl{font-size:.75rem;color:var(--muted)}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font-family:var(--body);fill:var(--muted)}
+.games{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.games li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.games li b{font-variant-numeric:tabular-nums}
+
+/* Suas perguntas */
+.mylist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.mylist li{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 12px;font-size:.9rem}
+.mylist li span{min-width:0;overflow-wrap:anywhere}
+
 .linkbox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .linkbox code{flex:1 1 220px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom, 0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem;max-width:calc(100% - 32px);z-index:20}
@@ -151,27 +183,44 @@ details[open] summary::after{content:"–"}
 
   <section id="stage" aria-live="polite"></section>
 
+  <details id="storyBox">
+    <summary>Nossa história</summary>
+    <div class="inner" id="story"></div>
+  </details>
+
   <details id="addBox">
-    <summary>Criar pergunta de vocês</summary>
-    <form class="inner" id="addForm">
-      <p class="muted">Piadas internas, lugares que vocês foram, manias. As perguntas novas entram primeiro nas próximas rodadas.</p>
-      <div class="radio" role="radiogroup" aria-label="Tipo da pergunta">
-        <label><input type="radio" name="tipo" id="tipoS" value="sintonia" checked><span>Sintonia (sobre o casal)</span></label>
-        <label><input type="radio" name="tipo" id="tipoO" value="sobre"><span>Duelo (sobre a pessoa)</span></label>
-      </div>
-      <label for="qTexto">Pergunta
-        <input type="text" id="qTexto" maxlength="160" required placeholder="Onde foi nosso primeiro beijo?">
-      </label>
-      <p class="hint" id="tipoHint">Os dois respondem e torcem para escolher a mesma coisa.</p>
-      <div class="two">
-        <label for="o1">Opção 1<input type="text" id="o1" maxlength="60" required></label>
-        <label for="o2">Opção 2<input type="text" id="o2" maxlength="60" required></label>
-        <label for="o3">Opção 3<input type="text" id="o3" maxlength="60"></label>
-        <label for="o4">Opção 4<input type="text" id="o4" maxlength="60"></label>
-      </div>
-      <div><button class="btn" type="submit" id="addBtn">Adicionar pergunta</button></div>
+    <summary>Suas perguntas</summary>
+    <div class="inner">
+      <form id="addForm" style="display:flex;flex-direction:column;gap:12px">
+        <p class="muted">Escreva perguntas pra outra pessoa responder. Elas entram nas próximas rodadas com o seu nome.</p>
+        <div class="radio" role="radiogroup" aria-label="Tipo da pergunta">
+          <label><input type="radio" name="tipo" id="tipoS" value="sintonia" checked><span>Sintonia (sobre o casal)</span></label>
+          <label><input type="radio" name="tipo" id="tipoO" value="sobre"><span>Duelo (sobre a pessoa)</span></label>
+        </div>
+        <label for="qTexto">Pergunta
+          <input type="text" id="qTexto" maxlength="140" required placeholder="Onde foi nosso primeiro beijo?">
+        </label>
+        <p class="hint" id="tipoHint">Os dois respondem e torcem para escolher a mesma coisa.</p>
+        <div class="two">
+          <label for="o1">Opção 1<input type="text" id="o1" maxlength="50" required></label>
+          <label for="o2">Opção 2<input type="text" id="o2" maxlength="50" required></label>
+          <label for="o3">Opção 3<input type="text" id="o3" maxlength="50"></label>
+          <label for="o4">Opção 4<input type="text" id="o4" maxlength="50"></label>
+        </div>
+        <div><button class="btn" type="submit" id="addBtn">Adicionar pergunta</button></div>
+      </form>
+      <p class="eyebrow" id="myListTitle" hidden>Que você escreveu</p>
+      <ul class="mylist" id="myList"></ul>
       <p class="muted" id="customCount"></p>
-    </form>
+    </div>
+  </details>
+
+  <details id="picBox">
+    <summary>Perguntas picantes 🌶️</summary>
+    <div class="inner">
+      <label class="switch" for="picToggle"><input type="checkbox" id="picToggle" role="switch"><span class="track" aria-hidden="true"></span><span>Liberar perguntas picantes 🌶️</span></label>
+      <p class="muted" id="picStatus" aria-live="polite"></p>
+    </div>
   </details>
 
   <details id="histBox">
@@ -228,6 +277,40 @@ const BANK = [
   {id:"o13",tipo:"sobre",texto:"No karaokê, {nome} cantaria...",opcoes:["Uma sofrência","Um clássico dos anos 80","Um pop do momento","Nem a pau"]},
   {id:"o14",tipo:"sobre",texto:"Num dia perfeito, que horas {nome} acordaria?",opcoes:["Antes das 7","Lá pelas 9","Depois das 11","Só depois do almoço"]}
 ];
+// Pacote picante: só entra no sorteio quando os dois liberam
+const SPICY = [
+  {id:"p1",tipo:"sintonia",texto:"O clima perfeito pra uma noite a dois é...",opcoes:["Velas e música baixinha","Banho quente juntos","Vinho e conversa no sofá","Sem plano, deixa rolar"]},
+  {id:"p2",tipo:"sintonia",texto:"Onde seria nossa escapada romântica?",opcoes:["Pousada com hidromassagem","Cabana no meio do mato","Hotel chique na cidade","Em casa, celular desligado"]},
+  {id:"p3",tipo:"sintonia",texto:"Que música combina com a gente a sós?",opcoes:["Um R&B bem lento","MPB romântica","Pagode das antigas","Silêncio, só a gente"]},
+  {id:"p4",tipo:"sintonia",texto:"O beijo mais gostoso é o...",opcoes:["De bom dia, ainda na cama","Roubado no meio da rua","De reencontro, cheio de saudade","Demorado, de cinema"]},
+  {id:"p5",tipo:"sintonia",texto:"Que visual deixa o clima mais quente?",opcoes:["Camisa meio aberta","Lingerie ou cueca nova","Pijama de seda","Toalha saindo do banho"]},
+  {id:"p6",tipo:"sintonia",texto:"Massagem a dois seria...",opcoes:["Com óleo e luz baixa","Nos pés, vendo série","Nas costas, depois do banho","Começa massagem, termina em outra coisa"]},
+  {id:"p7",tipo:"sintonia",texto:"A melhor hora pra namorar é...",opcoes:["De manhã cedinho","Depois do almoço","No fim da tarde","De madrugada"]},
+  {id:"p8",tipo:"sintonia",texto:"Nosso código secreto pra \"vamos pro quarto\" seria...",opcoes:["Bora ver um filme?","Tá com sono?","Vou tomar banho...","Só um olhar já basta"]},
+  {id:"p9",tipo:"sintonia",texto:"Uma fantasia leve que a gente toparia:",opcoes:["Fingir que somos estranhos num bar","Fim de semana sem sair do quarto","Banho de chuva juntos","Jantar só de roupão"]},
+  {id:"p10",tipo:"sintonia",texto:"O que mais esquenta o clima entre a gente?",opcoes:["Elogio no ouvido","Mensagem ousada no meio do dia","Dançar coladinho","Um ciuminho bobo"]},
+  {id:"p11",tipo:"sintonia",texto:"Banho a dois?",opcoes:["Sim, sempre","Só se a água estiver quentinha","De banheira, por favor","Cada um no seu"]},
+  {id:"p12",tipo:"sintonia",texto:"Fora o quarto, que cômodo tem mais potencial?",opcoes:["Sofá da sala","Cozinha","Chuveiro","Varanda, com cuidado"]},
+  {id:"p13",tipo:"sintonia",texto:"Pra uma noite especial, o que não pode faltar?",opcoes:["Vela cheirosa","Lençol limpinho","A playlist certa","Um bom vinho"]},
+  {id:"p14",tipo:"sintonia",texto:"Depois de uma noite juntos, o ideal é...",opcoes:["Dormir de conchinha","Conversar até tarde","Atacar a geladeira","Mais uma rodada"]},
+  {id:"p15",tipo:"sintonia",texto:"Num motel temático, a gente escolheria a suíte...",opcoes:["Tropical, com cascata","Espelhos pra todo lado","Clássica, cama redonda","Com piscina aquecida"]},
+  {id:"p16",tipo:"sobre",texto:"Onde {nome} mais gosta de receber carinho?",opcoes:["Pescoço","Costas","Cabelo","Pés"]},
+  {id:"p17",tipo:"sobre",texto:"O que deixa {nome} no clima na hora?",opcoes:["Perfume","Beijo no pescoço","Sussurro no ouvido","Um olhar demorado"]},
+  {id:"p18",tipo:"sobre",texto:"Com que roupa {nome} se acha mais sexy?",opcoes:["Roupa social, bem arrumado(a)","Lingerie ou cueca boxer","Moletom largo, à vontade","Nenhuma, só o lençol"]},
+  {id:"p19",tipo:"sobre",texto:"Na hora H, {nome} prefere...",opcoes:["Luz acesa","Luz apagada","Meia-luz","Depende do dia"]},
+  {id:"p20",tipo:"sobre",texto:"Que tipo de beijo {nome} prefere?",opcoes:["Lento e demorado","Intenso, com pegada","Selinho carinhoso","No pescoço"]},
+  {id:"p21",tipo:"sobre",texto:"Em que horário {nome} fica mais no clima?",opcoes:["De manhã","À tarde","À noite","De madrugada"]},
+  {id:"p22",tipo:"sobre",texto:"Qual destas {nome} toparia realizar?",opcoes:["Uma noite num hotel diferente","Algo ao ar livre, escondidinho","Usar uma fantasia","Uma viagem só pra isso"]},
+  {id:"p23",tipo:"sobre",texto:"Que mensagem deixaria {nome} derretido(a)?",opcoes:["Tô com saudade do teu cheiro","Não vejo a hora de te ver","Uma foto ousada","Um áudio de voz baixinha"]},
+  {id:"p24",tipo:"sobre",texto:"Na hora do clima, {nome} gosta mais de...",opcoes:["Tomar a iniciativa","Ser surpreendido(a)","Meio a meio","Depende do humor"]},
+  {id:"p25",tipo:"sobre",texto:"Que cheiro mais atrai {nome}?",opcoes:["Perfume amadeirado","Banho recém-tomado","Algo doce, tipo baunilha","O cheiro natural da pele"]},
+  {id:"p26",tipo:"sobre",texto:"Fora a boca, onde {nome} mais gosta de ganhar beijo?",opcoes:["Pescoço","Orelha","Barriga","Mãos"]},
+  {id:"p27",tipo:"sobre",texto:"O que {nome} acha mais sexy na outra pessoa?",opcoes:["Confiança","Bom humor","Cuidado e carinho","Pegada firme"]},
+  {id:"p28",tipo:"sobre",texto:"Pra uma noite especial, {nome} escolheria...",opcoes:["Motel temático","Hotel com vista","Em casa, tudo preparado","Acampar sob as estrelas"]},
+  {id:"p29",tipo:"sobre",texto:"Depois que o clima esquenta, {nome} costuma...",opcoes:["Pedir mais","Apagar na hora","Ficar abraçadinho(a)","Sentir fome"]},
+  {id:"p30",tipo:"sobre",texto:"Qual elogio mais mexe com {nome}?",opcoes:["Você é lindo(a)","Você me deixa louco(a)","Adoro seu cheiro","Ninguém me entende como você"]}
+].map(q => Object.assign(q, { picante: true }));
+const RODADAS = 10; // rodadas por partida
 
 const DB_URL = "https://sintonia-a-dois-default-rtdb.firebaseio.com";
 const $ = id => document.getElementById(id);
@@ -253,6 +336,8 @@ let busy = false, creating = false, pendingName = null, confirmReset = false;
 let presenceRef = null, lastNudge = 0, bootAt = Date.now();
 let listeners = [];
 let presencaVal = {}, nudgeBase = null;
+let minhas = [], picante = {}, historico = [], savedIds = new Set();
+let storySig = "", mineSig = "";
 
 function loadSeat(){ const s = sala && store.get("sintonia-seat-" + sala); seat = (s === "a" || s === "b") ? s : null; }
 loadSeat();
@@ -290,11 +375,15 @@ function linkBox(){
 function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function shuffled(arr, seed){ const r = rng(seed), a = arr.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function validQ(q){ return q && typeof q.texto === "string" && Array.isArray(q.opcoes) && q.opcoes.filter(o => typeof o === "string" && o.trim()).length >= 2 && (q.tipo === "sintonia" || q.tipo === "sobre"); }
+function spicyOn(){ return picante.a === true && picante.b === true; }
 function deck(seed){
-  const cs = customs.filter(validQ).sort((x, y) => (x.criada || 0) - (y.criada || 0));
-  const s = shuffled(BANK.filter(q => q.tipo === "sintonia"), seed), o = shuffled(BANK.filter(q => q.tipo === "sobre"), seed + 7);
+  const byDate = (x, y) => (x.criada || 0) - (y.criada || 0);
+  const ms = minhas.filter(q => validQ(q) && (q.autor === "a" || q.autor === "b")).sort(byDate);
+  const cs = customs.filter(validQ).sort(byDate);
+  const pool = spicyOn() ? BANK.concat(SPICY) : BANK;
+  const s = shuffled(pool.filter(q => q.tipo === "sintonia"), seed), o = shuffled(pool.filter(q => q.tipo === "sobre"), seed + 7);
   const mix = []; for (let i = 0; i < Math.max(s.length, o.length); i++){ if (s[i]) mix.push(s[i]); if (o[i]) mix.push(o[i]); }
-  return cs.concat(mix);
+  return ms.concat(cs, mix);
 }
 function pickFor(r, g){
   const rounds = g.rodadas || {};
@@ -302,16 +391,25 @@ function pickFor(r, g){
   const d = deck(g.seed || 1);
   const q = d.find(x => !used.has(x.id)) || d[(r - 1) % d.length];
   const out = { id: q.id, tipo: q.tipo, texto: q.texto.slice(0, 160), opcoes: q.opcoes.filter(o => typeof o === "string" && o.trim()).slice(0, 4).map(o => o.slice(0, 60)) };
+  if (q.picante) out.picante = true;
+  if (q.autor === "a" || q.autor === "b") out.autor = q.autor;
   if (q.tipo === "sobre"){
     const n = Object.entries(rounds).filter(([k, v]) => rn(k) < r && v && v.q && v.q.tipo === "sobre").length;
-    out.sujeito = n % 2 === 0 ? "a" : "b";
+    // pergunta escrita por alguém: quem responde a verdade é a outra pessoa
+    out.sujeito = out.autor ? other(out.autor) : (n % 2 === 0 ? "a" : "b");
   }
   return out;
+}
+function totalOf(g){ return Number(g && g.total) > 0 ? Number(g.total) : RODADAS; }
+function isOver(){
+  if (!game || game.rodada < totalOf(game)) return false;
+  const R = (game.rodadas || {})[rk(game.rodada)], resp = (R && R.resp) || {};
+  return resp.a != null && resp.b != null;
 }
 
 // ----- placar derivado das rodadas -----
 function tally(){
-  const t = { sync: 0, syncTotal: 0, pts: { a: 0, b: 0 }, hist: [] };
+  const t = { sync: 0, syncTotal: 0, duel: 0, duelTotal: 0, pts: { a: 0, b: 0 }, hist: [] };
   if (!game || !game.rodadas) return t;
   const keys = Object.keys(game.rodadas).filter(k => rn(k) <= game.rodada).sort((a, b) => rn(a) - rn(b));
   for (const k of keys){
@@ -321,7 +419,8 @@ function tally(){
     const hit = resp.a === resp.b;
     if (R.q.tipo === "sobre"){
       const g = other(R.q.sujeito === "b" ? "b" : "a");
-      if (hit) t.pts[g]++;
+      if (hit){ t.pts[g]++; t.duel++; }
+      t.duelTotal++;
       t.hist.push({ ok: hit, txt: fill(R.q, R.q.sujeito) + " → " + (hit ? nome(g) + " acertou" : nome(g) + " errou") });
     } else {
       t.syncTotal++; if (hit) t.sync++;
@@ -394,12 +493,19 @@ function renderRound(stage){
   const card = el("div", "card"); card.id = "roundCard";
 
   const mode = el("div", "mode");
+  const tot = totalOf(game), rodTxt = "Rodada " + Math.min(r, tot) + " de " + tot;
   if (q.tipo === "sobre"){
-    mode.append(el("span", "pill duelo", "Duelo"), el("span", "muted", "Rodada " + r + " · quem conhece mais " + nome(sujeito) + "?"));
+    mode.append(el("span", "pill duelo", "Duelo"), el("span", "muted", rodTxt + " · quem conhece mais " + nome(sujeito) + "?"));
   } else {
-    mode.append(el("span", "pill", "Sintonia"), el("span", "muted", "Rodada " + r + " · vocês dois contra o jogo"));
+    mode.append(el("span", "pill", "Sintonia"), el("span", "muted", rodTxt + " · vocês dois contra o jogo"));
   }
   card.append(mode);
+  if (q.picante || q.autor === "a" || q.autor === "b"){
+    const tags = el("div", "mode");
+    if (q.picante) tags.append(el("span", "pill pic", "Picante 🌶️"));
+    if (q.autor === "a" || q.autor === "b") tags.append(el("span", "tag", q.autor === seat ? "Pergunta sua" : "Pergunta de " + nome(q.autor)));
+    card.append(tags);
+  }
   card.append(el("p", "q", q.tipo === "sobre" ? fill(q, sujeito) : q.texto));
 
   let hint;
@@ -436,9 +542,12 @@ function renderRound(stage){
       msg = hit ? nome(g) + " acertou! +1 ponto no duelo." : nome(g) + " errou. " + nome(sujeito) + " respondeu “" + (q.opcoes[resp[sujeito]] || "") + "”.";
     }
     card.append(el("div", "result " + (hit ? "ok" : "no"), msg));
-    const nx = el("button", "btn", "Próxima pergunta"); nx.type = "button"; nx.id = "nextBtn"; nx.disabled = busy;
-    nx.onclick = next;
-    card.append(nx);
+    if (isOver()) card.append(renderEnd());
+    else {
+      const nx = el("button", "btn", "Próxima pergunta"); nx.type = "button"; nx.id = "nextBtn"; nx.disabled = busy;
+      nx.onclick = next;
+      card.append(nx);
+    }
   } else {
     const st = el("div", "status");
     if (mine == null){
@@ -454,6 +563,151 @@ function renderRound(stage){
     card.append(st);
   }
   stage.append(card);
+}
+
+// ----- fim de partida e histórico -----
+function summaryOf(t){
+  const total = t.syncTotal + t.duelTotal, acertos = t.sync + t.duel;
+  const s = {
+    modo: t.syncTotal && t.duelTotal ? "misto" : (t.duelTotal ? "duelo" : "sintonia"),
+    acertos, total, pct: total ? Math.round(acertos / total * 100) : 0,
+    sintonia: { acertos: t.sync, total: t.syncTotal },
+    nomes: { a: nome("a"), b: nome("b") }
+  };
+  if (t.duelTotal) s.duelo = { a: t.pts.a, b: t.pts.b, total: t.duelTotal };
+  return s;
+}
+function frase(p){ return p >= 80 ? "Que sintonia!" : p >= 50 ? "Bem afinados." : "Assunto pra conversar não falta."; }
+function renderEnd(){
+  const s = summaryOf(tally());
+  const box = el("div", "end");
+  box.append(el("h2", null, "Fim da partida!"));
+  box.append(el("p", "pct", s.pct + "%"));
+  box.append(el("p", null, "Vocês acertaram " + s.acertos + " de " + s.total + ". " + frase(s.pct)));
+  if (s.duelo) box.append(el("p", "muted", "Duelo: " + nome("a") + " " + s.duelo.a + " × " + s.duelo.b + " " + nome("b")));
+  const row = el("div", "confirm");
+  const nb = el("button", "btn", "Nova partida"); nb.type = "button"; nb.id = "newBtn"; nb.disabled = busy;
+  nb.onclick = newMatch;
+  const hb = el("button", "btn ghost", "Ver nossa história"); hb.type = "button";
+  hb.onclick = () => { const d = $("storyBox"); d.open = true; d.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  row.append(nb, hb); box.append(row);
+  return box;
+}
+async function newMatch(){
+  if (busy) return;
+  busy = true; render();
+  await createGame({ a: nome("a"), b: nome("b") });
+  busy = false; render();
+}
+// Chave por partida (game.id) + transação: só a primeira gravação vale, mesmo que os dois aparelhos tentem
+function maybeSaveHistory(t){
+  if (!salaRef || !isOver()) return;
+  const gid = String(game.id || ("s" + game.seed)).replace(/[.#$\[\]\/]/g, "");
+  if (!gid || savedIds.has(gid)) return;
+  savedIds.add(gid);
+  const sum = Object.assign(summaryOf(t), { data: firebase.database.ServerValue.TIMESTAMP });
+  salaRef.child("historico/" + gid).transaction(cur => cur === null ? sum : undefined)
+    .catch(() => savedIds.delete(gid));
+}
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, text){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, String(attrs[k]));
+  if (text != null) e.textContent = text;
+  return e;
+}
+function dm(ms){ return new Date(ms).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }); }
+function chart(list, avg, bestKey){
+  const W = 320, H = 180, L = 30, R = 6, T = 18, B = 24;
+  const n = list.length, cw = (W - L - R) / n, bw = Math.min(30, cw * 0.62);
+  const y = v => T + (100 - v) / 100 * (H - T - B);
+  const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+    "aria-label": "Sintonia por partida, da mais antiga para a mais recente: " + list.map(h => h.pct + "%").join(", ") + ". Média " + avg + "%." });
+  for (const v of [0, 50, 100]){
+    svg.append(svgEl("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: "var(--line)", "stroke-width": 1 }));
+    svg.append(svgEl("text", { x: L - 6, y: y(v) + 4, "text-anchor": "end", "font-size": 10 }, v + "%"));
+  }
+  list.forEach((h, i) => {
+    const cx = L + i * cw + cw / 2, top = y(h.pct), best = h.k === bestKey;
+    svg.append(svgEl("rect", { x: cx - bw / 2, y: top, width: bw, height: Math.max(1, y(0) - top), rx: 3,
+      fill: best ? "var(--pa)" : "var(--ink)", "fill-opacity": best ? 1 : .8 }));
+    svg.append(svgEl("text", { x: cx, y: top - 4, "text-anchor": "middle", "font-size": 10, style: "fill:var(--fg);font-weight:700" }, String(h.pct)));
+    svg.append(svgEl("text", { x: cx, y: H - 8, "text-anchor": "middle", "font-size": n > 7 ? 9 : 10 }, n > 7 ? String(h.num) : dm(h.data)));
+  });
+  svg.append(svgEl("line", { x1: L, x2: W - R, y1: y(avg), y2: y(avg), stroke: "var(--pb)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }));
+  const box = el("div", "chart"); box.append(svg);
+  return box;
+}
+function renderStory(){
+  const list = historico
+    .filter(h => h && Number.isFinite(h.pct) && Number(h.data) > 0 && Number(h.total) > 0)
+    .sort((x, y) => x.data - y.data)
+    .map((h, i) => Object.assign({}, h, { num: i + 1 }));
+  const sig = JSON.stringify(list.map(h => [h.k, h.pct, h.data, h.acertos, h.total]));
+  if (sig === storySig) return;
+  storySig = sig;
+  const box = $("story"); box.textContent = "";
+  if (!list.length){ box.append(el("p", "muted", "Terminem uma partida de " + RODADAS + " rodadas e ela aparece aqui, com a porcentagem de sintonia.")); return; }
+  const avg = Math.round(list.reduce((a, h) => a + h.pct, 0) / list.length);
+  const best = list.reduce((b, h) => h.pct > b.pct ? h : b, list[0]);
+  const stats = el("div", "stats");
+  const stat = (big, lbl) => { const s = el("div", "stat"); s.append(el("span", "big", big), el("span", "lbl", lbl)); return s; };
+  stats.append(stat(avg + "%", "média geral"), stat(best.pct + "%", "melhor, em " + dm(best.data)), stat(String(list.length), list.length === 1 ? "partida" : "partidas"));
+  box.append(stats);
+  const shown = list.slice(-12);
+  box.append(el("p", "eyebrow", shown.length < list.length ? "Últimas " + shown.length + " partidas" : "Sintonia por partida"));
+  box.append(chart(shown, avg, best.k));
+  box.append(el("p", "hint", "Linha tracejada: a média. Barra verde: a melhor partida."));
+  const ul = el("ul", "games");
+  for (const h of list.slice(-5).reverse()){
+    const li = el("li");
+    let txt = dm(h.data) + " · " + h.acertos + " de " + h.total;
+    if (h.duelo && Number.isFinite(h.duelo.a) && Number.isFinite(h.duelo.b)) txt += " · duelo " + h.duelo.a + "×" + h.duelo.b;
+    li.append(el("span", "muted", txt), el("b", null, h.pct + "%"));
+    ul.append(li);
+  }
+  box.append(ul);
+}
+
+// ----- perguntas próprias e picantes -----
+function renderMinhas(){
+  const byDate = (x, y) => (x.criada || 0) - (y.criada || 0);
+  const mine = seat ? minhas.filter(q => q.autor === seat && validQ(q)).sort(byDate) : [];
+  const theirs = seat ? minhas.filter(q => q.autor === other(seat) && validQ(q)).length : 0;
+  const legacy = customs.filter(validQ).length;
+  const sig = (seat || "") + "|" + mine.map(q => q.key + ":" + q.texto).join("|");
+  if (sig !== mineSig){
+    mineSig = sig;
+    const ul = $("myList"); ul.textContent = "";
+    $("myListTitle").hidden = !mine.length;
+    for (const q of mine){
+      const li = el("li");
+      li.append(el("span", null, q.texto));
+      const b = el("button", "btn ghost small", "Apagar"); b.type = "button";
+      b.setAttribute("aria-label", "Apagar a pergunta: " + q.texto);
+      b.onclick = () => {
+        b.disabled = true;
+        salaRef.child("minhas/" + q.key).remove().then(() => toast("Pergunta apagada.")).catch(() => { b.disabled = false; toast("Não deu pra apagar. Tente de novo."); });
+      };
+      li.append(b); ul.append(li);
+    }
+  }
+  const parts = [];
+  if (theirs) parts.push(nome(other(seat)) + (theirs === 1 ? " escreveu 1 pergunta pra você." : " escreveu " + theirs + " perguntas pra você."));
+  if (legacy) parts.push(legacy === 1 ? "Mais 1 pergunta antiga de vocês." : "Mais " + legacy + " perguntas antigas de vocês.");
+  $("customCount").textContent = parts.join(" ");
+  $("addBtn").disabled = !salaRef || !seat;
+}
+function renderPicante(){
+  const t = $("picToggle"), mine = !!seat && picante[seat] === true;
+  t.checked = mine; t.disabled = !seat || !salaRef;
+  let msg;
+  if (!seat) msg = "Escolha seu lado no jogo pra usar.";
+  else if (spicyOn()) msg = "Liberadas pelos dois. Elas entram nas próximas rodadas.";
+  else if (mine) msg = "Você liberou. Esperando a outra pessoa.";
+  else msg = "Elas só entram no jogo quando os dois liberam.";
+  $("picStatus").textContent = msg;
 }
 
 function renderStage(){
@@ -495,9 +749,6 @@ function renderCfg(){
   if (document.activeElement !== n) n.value = seat ? nome(seat) : "";
   n.disabled = !seat || !game;
   $("swapSeat").disabled = !seat;
-  const valid = customs.filter(validQ).length;
-  $("customCount").textContent = valid ? valid + (valid === 1 ? " pergunta criada por vocês." : " perguntas criadas por vocês.") : "";
-  $("addBtn").disabled = !salaRef;
   const row = $("resetRow"); row.innerHTML = "";
   if (confirmReset){
     row.append(el("span", null, "Zerar o placar e começar de novo?"));
@@ -510,12 +761,14 @@ function renderCfg(){
     row.append(b);
   }
   const extras = sala ? false : true;
-  $("addBox").hidden = extras; $("histBox").hidden = extras; $("cfgBox").hidden = extras;
+  for (const id of ["storyBox", "addBox", "picBox", "histBox", "cfgBox"]) $(id).hidden = extras;
 }
 
 function render(){
   const t = tally();
   renderScore(t); renderStage(); renderHist(t); renderCfg(); renderPresence();
+  renderMinhas(); renderPicante(); renderStory();
+  maybeSaveHistory(t);
 }
 
 // ----- ações -----
@@ -559,7 +812,7 @@ async function next(){
 }
 async function createGame(nomes){
   if (creating || !gameRef) return; creating = true;
-  const g = { nomes: nomes || { a: "Jogador 1", b: "Jogador 2" }, seed: Math.floor(Math.random() * 1e9), rodada: 1, rodadas: {} };
+  const g = { id: salaRef.child("historico").push().key, total: RODADAS, nomes: nomes || { a: "Jogador 1", b: "Jogador 2" }, seed: Math.floor(Math.random() * 1e9), rodada: 1, rodadas: {} };
   g.rodadas[rk(1)] = { q: pickFor(1, g) };
   try { await gameRef.set(g); } catch(e){ toast("Não deu pra criar o jogo. Recarregue a página."); }
   creating = false;
@@ -590,23 +843,28 @@ $("swapSeat").onclick = () => {
 };
 document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", () => {
   const sobre = $("tipoO").checked;
-  $("tipoHint").textContent = sobre ? "Escreva {nome} onde entra o nome de quem responde a verdade. Ex.: Qual a cor favorita de {nome}? O jogo alterna entre vocês." : "Os dois respondem e torcem para escolher a mesma coisa.";
+  $("tipoHint").textContent = sobre ? "A outra pessoa responde a verdade e você tenta adivinhar. Escreva {nome} onde entra o nome dela." : "Os dois respondem e torcem para escolher a mesma coisa.";
   $("qTexto").placeholder = sobre ? "Qual a série favorita de {nome}?" : "Onde foi nosso primeiro beijo?";
 }));
 $("addForm").addEventListener("submit", async e => {
   e.preventDefault();
-  if (!salaRef) return;
+  if (!salaRef || !seat) return;
   const opcoes = ["o1", "o2", "o3", "o4"].map(id => $(id).value.trim()).filter(Boolean);
   const texto = $("qTexto").value.trim();
   if (!texto || opcoes.length < 2){ toast("Escreva a pergunta e pelo menos duas opções."); return; }
   const tipo = $("tipoO").checked ? "sobre" : "sintonia";
   $("addBtn").disabled = true;
   try {
-    await salaRef.child("perguntas").push({ tipo, texto: texto.slice(0, 160), opcoes: opcoes.map(o => o.slice(0, 60)), criada: Date.now() });
+    await salaRef.child("minhas").push({ autor: seat, tipo, texto: texto.slice(0, 140), opcoes: opcoes.map(o => o.slice(0, 50)), criada: firebase.database.ServerValue.TIMESTAMP });
     ["qTexto", "o1", "o2", "o3", "o4"].forEach(id => $(id).value = "");
     toast("Pergunta adicionada. Ela entra nas próximas rodadas.");
   } catch(err){ toast("Não deu pra salvar a pergunta. Tente de novo."); }
-  $("addBtn").disabled = false;
+  $("addBtn").disabled = !salaRef || !seat;
+});
+$("picToggle").addEventListener("change", e => {
+  if (!salaRef || !seat){ renderPicante(); return; }
+  const v = e.target.checked;
+  salaRef.child("picante/" + seat).set(v).catch(() => { toast("Não deu pra salvar. Tente de novo."); renderPicante(); });
 });
 
 // ----- conexão com o Firebase -----
@@ -614,6 +872,7 @@ function stop(){
   listeners.forEach(f => f()); listeners = [];
   if (presenceRef){ presenceRef.onDisconnect().cancel(); presenceRef.remove().catch(() => {}); presenceRef = null; }
   salaRef = gameRef = null; game = null; customs = []; partnerOnline = null; conn = "loading"; presencaVal = {}; nudgeBase = null;
+  minhas = []; picante = {}; historico = []; savedIds = new Set(); storySig = ""; mineSig = "";
 }
 function on(ref, fn, err){ ref.on("value", fn, err); listeners.push(() => ref.off("value", fn)); }
 
@@ -642,7 +901,23 @@ function boot(){
   on(salaRef.child("perguntas"), s => {
     const v = s.val() || {};
     customs = Object.entries(v).map(([id, q]) => Object.assign({}, q, { id: "c_" + id }));
-    renderCfg();
+    renderMinhas();
+  });
+  on(salaRef.child("minhas"), s => {
+    const v = s.val() || {};
+    minhas = Object.entries(v).filter(([, q]) => q && typeof q === "object")
+      .map(([k, q]) => Object.assign({}, q, { id: "m_" + k, key: k }));
+    renderMinhas();
+  });
+  on(salaRef.child("picante"), s => {
+    const v = s.val() || {};
+    picante = { a: v.a === true, b: v.b === true };
+    renderPicante();
+  });
+  on(salaRef.child("historico"), s => {
+    const v = s.val() || {};
+    historico = Object.entries(v).filter(([, h]) => h && typeof h === "object").map(([k, h]) => Object.assign({}, h, { k }));
+    renderStory();
   });
   on(salaRef.child("presenca"), s => {
     presencaVal = s.val() || {};
