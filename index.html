@@ -374,7 +374,7 @@ function renderSeatPicker(stage){
   lab.append(inp); card.append(lab);
   const seats = el("div", "seats");
   for (const s of ["a", "b"]){
-    const b = el("button", "seat " + s); b.type = "button";
+    const b = el("button", "seat " + s); b.type = "button"; b.id = "seatBtn-" + s;
     b.append(el("span", "sn", nome(s)), el("span", "muted", s === "a" ? "Lado verde" : "Lado coral"));
     b.onclick = () => chooseSeat(s, inp.value.trim());
     seats.append(b);
@@ -457,7 +457,13 @@ function renderRound(stage){
 }
 
 function renderStage(){
-  const stage = $("stage"); stage.innerHTML = "";
+  const stage = $("stage");
+  // Escolha de lado já na tela: só atualiza os nomes, sem apagar o que a pessoa está digitando
+  if (sala && !seat && conn !== "off" && $("seatName")){
+    for (const s of ["a", "b"]){ const b = $("seatBtn-" + s); if (b) b.firstChild.textContent = nome(s); }
+    return;
+  }
+  stage.innerHTML = "";
   if (!sala){ renderNoRoom(stage); return; }
   if (conn === "off"){
     const c = el("div", "card");
