@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sintonia a Dois</title>
+<meta name="description" content="Quiz a dois à distância: Sintonia (cooperativo) e Duelo (quem conhece mais o outro).">
+<meta name="theme-color" content="#3D318F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='24' cy='32' r='18' fill='%230B8A7C' fill-opacity='.8'/%3E%3Ccircle cx='40' cy='32' r='18' fill='%23D9483D' fill-opacity='.8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: uma coluna estreita, celular primeiro. Placar com dois círculos que se sobrepõem conforme a sintonia cresce. */
+:root{
+  --bg:#F5F4FA; --surface:#FFFFFF; --fg:#1E1B2E; --muted:#686379; --line:#E2DFEC;
+  --pa:#0B8A7C; --pa-soft:#DDF3EF; --pb:#D9483D; --pb-soft:#FBE3E0; --ink:#3D318F; --ink-soft:#E6E2FA;
+  --good:#1E7D45; --bad:#A3352B;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"DM Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14121D; --surface:#1E1B2B; --fg:#EEEBF7; --muted:#A29EB6; --line:#2F2B41;
+  --pa:#3CC6B4; --pa-soft:#173A37; --pb:#FF7B6C; --pb-soft:#46231F; --ink:#AFA2FF; --ink-soft:#2A2550;
+  --good:#5FD18C; --bad:#FF8E80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14121D; --surface:#1E1B2B; --fg:#EEEBF7; --muted:#A29EB6; --line:#2F2B41;
+  --pa:#3CC6B4; --pa-soft:#173A37; --pb:#FF7B6C; --pb-soft:#46231F; --ink:#AFA2FF; --ink-soft:#2A2550;
+  --good:#5FD18C; --bad:#FF8E80; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top, 0px);padding-bottom:env(safe-area-inset-bottom, 0px)}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{margin:0;font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.online{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent)}
+
+/* Placar */
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.player{display:flex;flex-direction:column;gap:2px;min-width:0}
+.player.b{text-align:right;align-items:flex-end}
+.player .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.player.a .nm{color:var(--pa)} .player.b .nm{color:var(--pb)}
+.player .pts{font-family:var(--display);font-size:2rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.player .lbl{font-size:.75rem;color:var(--muted)}
+.venn{display:flex;flex-direction:column;align-items:center;gap:2px}
+.venn svg{width:112px;height:64px;display:block}
+.venn .v{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.venn .v b{color:var(--fg)}
+
+/* Cartão da rodada */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--ink-soft);color:var(--ink)}
+.pill.duelo{background:var(--pb-soft);color:var(--pb)}
+.q{font-family:var(--display);font-size:1.45rem;font-weight:700;line-height:1.2;letter-spacing:-.01em}
+.hint{font-size:.95rem;color:var(--muted)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+.opt{position:relative;text-align:left;min-height:56px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-weight:500;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:border-color .15s, transform .1s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt:disabled{cursor:default}
+.opt.mine{border-color:var(--ink);background:var(--ink-soft)}
+.opt.dim{opacity:.55}
+.chips{display:flex;gap:4px;flex-shrink:0}
+.chip{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;font-weight:800;color:#fff}
+.chip.a{background:var(--pa)} .chip.b{background:var(--pb)}
+.status{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.95rem}
+.result{border-radius:12px;padding:12px 14px;font-weight:600}
+.result.ok{background:color-mix(in srgb, var(--good) 14%, transparent);color:var(--good)}
+.result.no{background:color-mix(in srgb, var(--bad) 12%, transparent);color:var(--bad)}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;background:var(--ink);color:var(--surface)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{padding:8px 12px;font-size:.9rem}
+.btn:disabled{opacity:.5;cursor:default}
+.wait{display:inline-flex;align-items:center;gap:8px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* Escolha de jogador */
+.seats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seat{border-radius:14px;padding:16px;border:2px solid var(--line);background:var(--bg);text-align:left;display:flex;flex-direction:column;gap:4px}
+.seat.a{border-color:var(--pa)} .seat.b{border-color:var(--pb)}
+.seat .sn{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.seat.a .sn{color:var(--pa)} .seat.b .sn{color:var(--pb)}
+label{display:flex;flex-direction:column;gap:6px;font-size:.9rem;font-weight:500}
+input[type=text],select{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;min-width:0;width:100%}
+
+/* Seções extras */
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+summary{cursor:pointer;padding:14px 16px;font-family:var(--display);font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.3rem;color:var(--muted)}
+details[open] summary::after{content:"–"}
+.inner{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:420px){.two{grid-template-columns:1fr}}
+.radio{display:flex;gap:8px;flex-wrap:wrap}
+.radio label{flex-direction:row;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.radio input:checked + span{font-weight:700;color:var(--ink)}
+.hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.hist li{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}
+.hist .mk{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;font-weight:800;color:var(--surface)}
+.hist .mk.ok{background:var(--good)} .hist .mk.no{background:var(--bad)}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.notice{background:var(--ink-soft);color:var(--fg);border-radius:12px;padding:12px 14px;font-size:.95rem}
+
+.linkbox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.linkbox code{flex:1 1 220px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom, 0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem;max-width:calc(100% - 32px);z-index:20}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Jogo a dois, cada um no seu aparelho</p>
+      <h1>Sintonia a Dois</h1>
+    </div>
+    <span class="online" id="online" hidden><span class="dot" id="dot"></span><span id="onlineTxt"></span></span>
+  </header>
+
+  <section class="score" aria-label="Placar">
+    <div class="player a"><span class="nm" id="nmA">Jogador 1</span><span class="pts" id="ptsA">0</span><span class="lbl">pontos no duelo</span></div>
+    <div class="venn">
+      <svg viewBox="0 0 112 64" aria-hidden="true">
+        <circle id="cA" cx="38" cy="32" r="26" fill="var(--pa)" fill-opacity=".55"/>
+        <circle id="cB" cx="74" cy="32" r="26" fill="var(--pb)" fill-opacity=".55"/>
+      </svg>
+      <span class="v" id="sync">Sintonia <b>0</b> de 0</span>
+    </div>
+    <div class="player b"><span class="nm" id="nmB">Jogador 2</span><span class="pts" id="ptsB">0</span><span class="lbl">pontos no duelo</span></div>
+  </section>
+
+  <section id="stage" aria-live="polite"></section>
+
+  <details id="addBox">
+    <summary>Criar pergunta de vocês</summary>
+    <form class="inner" id="addForm">
+      <p class="muted">Piadas internas, lugares que vocês foram, manias. As perguntas novas entram primeiro nas próximas rodadas.</p>
+      <div class="radio" role="radiogroup" aria-label="Tipo da pergunta">
+        <label><input type="radio" name="tipo" id="tipoS" value="sintonia" checked><span>Sintonia (sobre o casal)</span></label>
+        <label><input type="radio" name="tipo" id="tipoO" value="sobre"><span>Duelo (sobre a pessoa)</span></label>
+      </div>
+      <label for="qTexto">Pergunta
+        <input type="text" id="qTexto" maxlength="160" required placeholder="Onde foi nosso primeiro beijo?">
+      </label>
+      <p class="hint" id="tipoHint">Os dois respondem e torcem para escolher a mesma coisa.</p>
+      <div class="two">
+        <label for="o1">Opção 1<input type="text" id="o1" maxlength="60" required></label>
+        <label for="o2">Opção 2<input type="text" id="o2" maxlength="60" required></label>
+        <label for="o3">Opção 3<input type="text" id="o3" maxlength="60"></label>
+        <label for="o4">Opção 4<input type="text" id="o4" maxlength="60"></label>
+      </div>
+      <div><button class="btn" type="submit" id="addBtn">Adicionar pergunta</button></div>
+      <p class="muted" id="customCount"></p>
+    </form>
+  </details>
+
+  <details id="histBox">
+    <summary>Últimas rodadas</summary>
+    <div class="inner"><ul class="hist" id="hist"></ul></div>
+  </details>
+
+  <details id="cfgBox">
+    <summary>Ajustes</summary>
+    <div class="inner">
+      <div id="shareCfg"></div>
+      <label for="myName">Seu nome no jogo<input type="text" id="myName" maxlength="24"></label>
+      <div class="confirm">
+        <button class="btn ghost small" type="button" id="swapSeat">Trocar de jogador neste aparelho</button>
+      </div>
+      <div class="confirm" id="resetRow">
+        <button class="btn ghost small" type="button" id="resetBtn">Começar um jogo novo</button>
+      </div>
+    </div>
+  </details>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const BANK = [
+  {id:"s1",tipo:"sintonia",texto:"Qual seria nossa viagem dos sonhos?",opcoes:["Praia no Nordeste","Europa de trem","Japão","Chalé na serra com lareira"]},
+  {id:"s2",tipo:"sintonia",texto:"O domingo perfeito pra nós dois é...",opcoes:["Maratona de série no sofá","Almoço num restaurante novo","Trilha ou parque","Pijama o dia todo, sem plano"]},
+  {id:"s3",tipo:"sintonia",texto:"Se a gente tivesse um bichinho agora, seria...",opcoes:["Cachorro","Gato","Os dois","Uma planta já tá ótimo"]},
+  {id:"s4",tipo:"sintonia",texto:"Nosso date ideal hoje seria...",opcoes:["Cinema e pipoca","Jantar romântico","Cozinhar juntos em casa","Barzinho com música ao vivo"]},
+  {id:"s5",tipo:"sintonia",texto:"Numa viagem de carro, o que toca no som?",opcoes:["Sertanejo","Pop internacional","MPB","Funk ou pagode"]},
+  {id:"s6",tipo:"sintonia",texto:"Se a gente ganhasse na loteria, a primeira coisa seria...",opcoes:["Viajar o mundo","Comprar uma casa","Guardar tudo","Dar uma festa enorme"]},
+  {id:"s7",tipo:"sintonia",texto:"Que filme a gente escolhe numa noite juntos?",opcoes:["Comédia romântica","Terror","Ação","Animação"]},
+  {id:"s8",tipo:"sintonia",texto:"Qual seria nosso superpoder de casal?",opcoes:["Ler a mente um do outro","Teletransporte pra se ver na hora","Parar o tempo","Nunca brigar"]},
+  {id:"s9",tipo:"sintonia",texto:"Pizza de sexta: qual sabor a gente pede?",opcoes:["Calabresa","Quatro queijos","Portuguesa","Meio a meio pra não brigar"]},
+  {id:"s10",tipo:"sintonia",texto:"Se pudéssemos morar em qualquer lugar, seria...",opcoes:["Na praia","No interior, com quintal","Numa cidade grande","Fora do Brasil"]},
+  {id:"s11",tipo:"sintonia",texto:"Qual seria o nome do nosso podcast?",opcoes:["Dois de Nós","Briga Saudável","Conversa de Travesseiro","Quem Deixou a Louça?"]},
+  {id:"s12",tipo:"sintonia",texto:"Qual a discussão boba mais provável entre a gente?",opcoes:["Onde vamos comer","O que assistir","Temperatura do ar-condicionado","Quem dormiu primeiro no filme"]},
+  {id:"s13",tipo:"sintonia",texto:"No apocalipse zumbi, nosso plano é...",opcoes:["Fugir pro mato","Bunker em casa","Liderar os sobreviventes","Cair primeiro, mas juntos"]},
+  {id:"s14",tipo:"sintonia",texto:"Café da manhã perfeito juntos:",opcoes:["Pão de queijo e café","Panqueca","Açaí","Tapioca"]},
+  {id:"o1",tipo:"sobre",texto:"Se {nome} pudesse comer uma coisa só pelo resto da vida, seria...",opcoes:["Pizza","Sushi","Churrasco","Doce, qualquer um"]},
+  {id:"o2",tipo:"sobre",texto:"O que mais tira {nome} do sério?",opcoes:["Gente atrasada","Barulho de mastigar","Fome","Internet lenta"]},
+  {id:"o3",tipo:"sobre",texto:"Qual seria a profissão dos sonhos de {nome}?",opcoes:["Viajar o mundo sendo pago","Chef de cozinha","Artista","Ter o próprio negócio"]},
+  {id:"o4",tipo:"sobre",texto:"Num dia livre só pra si, {nome} faria...",opcoes:["Dormir até tarde","Maratonar uma série","Sair pra passear","Jogar videogame"]},
+  {id:"o5",tipo:"sobre",texto:"Qual o maior medo de {nome}?",opcoes:["Barata","Altura","Escuro","Ficar sem celular"]},
+  {id:"o6",tipo:"sobre",texto:"Que mania {nome} tem?",opcoes:["Falar dormindo","Deixar copo pela casa","Olhar o celular toda hora","Cantar no banho"]},
+  {id:"o7",tipo:"sobre",texto:"Se {nome} fosse um animal, seria...",opcoes:["Gato preguiçoso","Cachorro animado","Coruja da madrugada","Golfinho"]},
+  {id:"o8",tipo:"sobre",texto:"Qual a bebida favorita de {nome}?",opcoes:["Café","Refrigerante","Suco","Uma cerveja gelada"]},
+  {id:"o9",tipo:"sobre",texto:"Como {nome} reage quando tá com fome?",opcoes:["Fica de mau humor","Come o que aparecer","Nem percebe","Fala de comida sem parar"]},
+  {id:"o10",tipo:"sobre",texto:"Qual estação do ano {nome} prefere?",opcoes:["Verão","Outono","Inverno","Primavera"]},
+  {id:"o11",tipo:"sobre",texto:"Qual app {nome} mais usa?",opcoes:["WhatsApp","Instagram","TikTok","YouTube"]},
+  {id:"o12",tipo:"sobre",texto:"Qual presente deixaria {nome} mais feliz?",opcoes:["Uma viagem","Algo feito à mão","Roupa ou tênis","Um jantar especial"]},
+  {id:"o13",tipo:"sobre",texto:"No karaokê, {nome} cantaria...",opcoes:["Uma sofrência","Um clássico dos anos 80","Um pop do momento","Nem a pau"]},
+  {id:"o14",tipo:"sobre",texto:"Num dia perfeito, que horas {nome} acordaria?",opcoes:["Antes das 7","Lá pelas 9","Depois das 11","Só depois do almoço"]}
+];
+
+const DB_URL = "https://sintonia-a-dois-default-rtdb.firebaseio.com";
+const $ = id => document.getElementById(id);
+const other = s => s === "a" ? "b" : "a";
+const rk = n => "r" + n;
+const rn = k => Number(String(k).replace(/^r/, ""));
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k,v); } catch(e){} }
+};
+
+function salaFromHash(){
+  const h = decodeURIComponent(location.hash.replace(/^#/, "")).trim().toLowerCase();
+  return /^[a-z0-9-]{10,40}$/.test(h) ? h : null;
+}
+let sala = salaFromHash();
+let fdb = null, salaRef = null, gameRef = null, game = null, customs = [];
+let seat = null;
+let conn = "loading";          // loading | slow | off | ok
+let partnerOnline = null;
+let online = false;
+let busy = false, creating = false, pendingName = null, confirmReset = false;
+let presenceRef = null, lastNudge = 0, bootAt = Date.now();
+let listeners = [];
+let presencaVal = {}, nudgeBase = null;
+
+function loadSeat(){ const s = sala && store.get("sintonia-seat-" + sala); seat = (s === "a" || s === "b") ? s : null; }
+loadSeat();
+
+function link(){ return location.origin + location.pathname + "#" + sala; }
+function nome(s){
+  const n = game && game.nomes && typeof game.nomes[s] === "string" && game.nomes[s].trim();
+  return n || (s === "a" ? "Jogador 1" : "Jogador 2");
+}
+function fill(q, s){ return String(q.texto || "").replace(/\{nome\}/g, nome(s)); }
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+let toastT;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+async function copyText(txt, okMsg){
+  try { await navigator.clipboard.writeText(txt); toast(okMsg); }
+  catch(e){ toast("Não deu pra copiar. Segure o dedo no link para copiar."); }
+}
+function linkBox(){
+  const box = el("div", "linkbox");
+  const code = el("code", null, link());
+  const b = el("button", "btn ghost small", "Copiar link"); b.type = "button";
+  b.onclick = () => copyText(link(), "Link copiado. Manda pra outra pessoa.");
+  box.append(code, b);
+  if (navigator.share){
+    const s = el("button", "btn ghost small", "Enviar"); s.type = "button";
+    s.onclick = () => navigator.share({ title: "Sintonia a Dois", text: "Bora jogar Sintonia a Dois?", url: link() }).catch(() => {});
+    box.append(s);
+  }
+  return box;
+}
+
+// ----- baralho determinístico: os dois aparelhos sorteiam a mesma pergunta -----
+function rng(seed){ let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffled(arr, seed){ const r = rng(seed), a = arr.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function validQ(q){ return q && typeof q.texto === "string" && Array.isArray(q.opcoes) && q.opcoes.filter(o => typeof o === "string" && o.trim()).length >= 2 && (q.tipo === "sintonia" || q.tipo === "sobre"); }
+function deck(seed){
+  const cs = customs.filter(validQ).sort((x, y) => (x.criada || 0) - (y.criada || 0));
+  const s = shuffled(BANK.filter(q => q.tipo === "sintonia"), seed), o = shuffled(BANK.filter(q => q.tipo === "sobre"), seed + 7);
+  const mix = []; for (let i = 0; i < Math.max(s.length, o.length); i++){ if (s[i]) mix.push(s[i]); if (o[i]) mix.push(o[i]); }
+  return cs.concat(mix);
+}
+function pickFor(r, g){
+  const rounds = g.rodadas || {};
+  const used = new Set(Object.values(rounds).map(x => x && x.q && x.q.id));
+  const d = deck(g.seed || 1);
+  const q = d.find(x => !used.has(x.id)) || d[(r - 1) % d.length];
+  const out = { id: q.id, tipo: q.tipo, texto: q.texto.slice(0, 160), opcoes: q.opcoes.filter(o => typeof o === "string" && o.trim()).slice(0, 4).map(o => o.slice(0, 60)) };
+  if (q.tipo === "sobre"){
+    const n = Object.entries(rounds).filter(([k, v]) => rn(k) < r && v && v.q && v.q.tipo === "sobre").length;
+    out.sujeito = n % 2 === 0 ? "a" : "b";
+  }
+  return out;
+}
+
+// ----- placar derivado das rodadas -----
+function tally(){
+  const t = { sync: 0, syncTotal: 0, pts: { a: 0, b: 0 }, hist: [] };
+  if (!game || !game.rodadas) return t;
+  const keys = Object.keys(game.rodadas).filter(k => rn(k) <= game.rodada).sort((a, b) => rn(a) - rn(b));
+  for (const k of keys){
+    const R = game.rodadas[k]; if (!R || !R.q) continue;
+    const resp = R.resp || {};
+    if (resp.a == null || resp.b == null) continue;
+    const hit = resp.a === resp.b;
+    if (R.q.tipo === "sobre"){
+      const g = other(R.q.sujeito === "b" ? "b" : "a");
+      if (hit) t.pts[g]++;
+      t.hist.push({ ok: hit, txt: fill(R.q, R.q.sujeito) + " → " + (hit ? nome(g) + " acertou" : nome(g) + " errou") });
+    } else {
+      t.syncTotal++; if (hit) t.sync++;
+      t.hist.push({ ok: hit, txt: R.q.texto + " → " + (hit ? "deu sintonia" : "não bateu") });
+    }
+  }
+  return t;
+}
+
+// ----- desenho -----
+function renderScore(t){
+  $("nmA").textContent = nome("a"); $("nmB").textContent = nome("b");
+  $("ptsA").textContent = t.pts.a; $("ptsB").textContent = t.pts.b;
+  $("sync").innerHTML = ""; $("sync").append("Sintonia ", el("b", null, String(t.sync)), " de " + t.syncTotal);
+  const pct = t.syncTotal ? t.sync / t.syncTotal : 0;
+  const gap = 36 - pct * 30;
+  $("cA").setAttribute("cx", String(56 - gap / 2)); $("cB").setAttribute("cx", String(56 + gap / 2));
+}
+
+function renderPresence(){
+  const box = $("online");
+  if (!sala || !seat || partnerOnline == null){ box.hidden = true; return; }
+  box.hidden = false;
+  $("dot").classList.toggle("on", partnerOnline);
+  $("onlineTxt").textContent = partnerOnline ? nome(other(seat)) + " está aqui" : nome(other(seat)) + " não está no jogo agora";
+}
+
+function renderNoRoom(stage){
+  const card = el("div", "card");
+  card.append(el("h2", null, "Crie a sala de vocês"));
+  card.append(el("p", "muted", "O jogo gera um link só de vocês dois. Você abre, manda o link pra outra pessoa e cada um joga no seu aparelho."));
+  const b = el("button", "btn", "Criar sala"); b.type = "button";
+  b.onclick = () => {
+    const abc = "abcdefghjkmnpqrstuvwxyz23456789"; let c = "";
+    const rnd = new Uint32Array(14); crypto.getRandomValues(rnd);
+    for (const v of rnd) c += abc[v % abc.length];
+    location.hash = c;
+  };
+  card.append(b);
+  card.append(el("p", "hint", "Recebeu um link? É só abrir ele direto que você já cai na sala."));
+  stage.append(card);
+}
+
+function renderSeatPicker(stage){
+  const card = el("div", "card");
+  card.append(el("h2", null, "Quem está jogando neste aparelho?"));
+  card.append(el("p", "muted", "Cada um abre este mesmo link no seu celular ou computador e escolhe um lado. Dá pra trocar depois em Ajustes."));
+  const lab = el("label"); lab.htmlFor = "seatName"; lab.append("Seu nome");
+  const inp = el("input"); inp.type = "text"; inp.id = "seatName"; inp.maxLength = 24; inp.placeholder = "Como você quer aparecer";
+  lab.append(inp); card.append(lab);
+  const seats = el("div", "seats");
+  for (const s of ["a", "b"]){
+    const b = el("button", "seat " + s); b.type = "button";
+    b.append(el("span", "sn", nome(s)), el("span", "muted", s === "a" ? "Lado verde" : "Lado coral"));
+    b.onclick = () => chooseSeat(s, inp.value.trim());
+    seats.append(b);
+  }
+  card.append(seats);
+  card.append(el("p", "eyebrow", "Link da sala para mandar"));
+  card.append(linkBox());
+  stage.append(card);
+}
+
+function renderRound(stage){
+  const r = game.rodada, R = (game.rodadas || {})[rk(r)];
+  if (!R || !validQ(R.q)){ stage.append(el("div", "card", "Preparando a rodada...")); return; }
+  const q = R.q, resp = R.resp || {}, mine = resp[seat], theirs = resp[other(seat)];
+  const both = mine != null && theirs != null;
+  const sujeito = q.sujeito === "b" ? "b" : "a";
+  const card = el("div", "card"); card.id = "roundCard";
+
+  const mode = el("div", "mode");
+  if (q.tipo === "sobre"){
+    mode.append(el("span", "pill duelo", "Duelo"), el("span", "muted", "Rodada " + r + " · quem conhece mais " + nome(sujeito) + "?"));
+  } else {
+    mode.append(el("span", "pill", "Sintonia"), el("span", "muted", "Rodada " + r + " · vocês dois contra o jogo"));
+  }
+  card.append(mode);
+  card.append(el("p", "q", q.tipo === "sobre" ? fill(q, sujeito) : q.texto));
+
+  let hint;
+  if (q.tipo === "sintonia") hint = "Escolham a mesma resposta sem combinar antes.";
+  else if (seat === sujeito) hint = "Essa é sobre você. Responda a verdade.";
+  else hint = "Adivinhe o que " + nome(sujeito) + " vai responder. Acertou, ganha ponto.";
+  card.append(el("p", "hint", hint));
+
+  const opts = el("div", "opts");
+  q.opcoes.forEach((o, i) => {
+    if (typeof o !== "string" || !o.trim()) return;
+    const b = el("button", "opt"); b.type = "button";
+    b.append(el("span", null, o));
+    if (mine === i) b.classList.add("mine");
+    if (both){
+      const chips = el("span", "chips");
+      if (resp.a === i) chips.append(Object.assign(el("span", "chip a", nome("a").slice(0, 1).toUpperCase()), { title: nome("a") }));
+      if (resp.b === i) chips.append(Object.assign(el("span", "chip b", nome("b").slice(0, 1).toUpperCase()), { title: nome("b") }));
+      b.append(chips);
+      if (resp.a !== i && resp.b !== i) b.classList.add("dim");
+    }
+    b.disabled = mine != null || busy;
+    b.onclick = () => answer(i);
+    opts.append(b);
+  });
+  card.append(opts);
+
+  if (both){
+    const hit = resp.a === resp.b;
+    let msg;
+    if (q.tipo === "sintonia") msg = hit ? "Sintonia! Vocês escolheram a mesma coisa. +1 pro casal." : "Não bateu dessa vez. Bom assunto pra conversar.";
+    else {
+      const g = other(sujeito);
+      msg = hit ? nome(g) + " acertou! +1 ponto no duelo." : nome(g) + " errou. " + nome(sujeito) + " respondeu “" + (q.opcoes[resp[sujeito]] || "") + "”.";
+    }
+    card.append(el("div", "result " + (hit ? "ok" : "no"), msg));
+    const nx = el("button", "btn", "Próxima pergunta"); nx.type = "button"; nx.id = "nextBtn"; nx.disabled = busy;
+    nx.onclick = next;
+    card.append(nx);
+  } else {
+    const st = el("div", "status");
+    if (mine == null){
+      st.append(el("span", "muted", theirs != null ? nome(other(seat)) + " já respondeu. Sua vez." : "Sua vez de responder."));
+    } else {
+      const w = el("span", "wait"); w.append(el("span", "pulse"), "Esperando " + nome(other(seat)) + " responder...");
+      st.append(w);
+      const nb = el("button", "btn ghost small", "Cutucar"); nb.type = "button"; nb.id = "nudgeBtn";
+      nb.disabled = nudgeLock;
+      nb.onclick = () => nudge(nb);
+      st.append(nb);
+    }
+    card.append(st);
+  }
+  stage.append(card);
+}
+
+function renderStage(){
+  const stage = $("stage"); stage.innerHTML = "";
+  if (!sala){ renderNoRoom(stage); return; }
+  if (conn === "off"){
+    const c = el("div", "card");
+    c.append(el("h2", null, "Não deu pra conectar"), el("p", "muted", "Confira a internet e recarregue a página. Se o problema continuar, o servidor do jogo pode estar fora do ar."));
+    stage.append(c); return;
+  }
+  if (!seat){ renderSeatPicker(stage); return; }
+  if (!game){
+    const c = el("div", "card"); const p = el("p", "wait");
+    p.append(el("span", "pulse"), conn === "slow" ? "Ainda conectando. Confira a internet; o jogo aparece sozinho quando conectar." : "Carregando o jogo...");
+    c.append(p); stage.append(c); return;
+  }
+  renderRound(stage);
+}
+
+function renderHist(t){
+  const ul = $("hist"); ul.innerHTML = "";
+  const last = t.hist.slice(-6).reverse();
+  if (!last.length){ ul.append(el("li", "muted", "As rodadas terminadas aparecem aqui.")); return; }
+  for (const h of last){
+    const li = el("li"); li.append(el("span", "mk " + (h.ok ? "ok" : "no"), h.ok ? "✓" : "×"), el("span", null, h.txt)); ul.append(li);
+  }
+}
+
+function renderCfg(){
+  const sc = $("shareCfg"); sc.innerHTML = "";
+  if (sala){ const l = el("label"); l.append("Link da sala"); sc.append(l, linkBox()); }
+  const n = $("myName");
+  if (document.activeElement !== n) n.value = seat ? nome(seat) : "";
+  n.disabled = !seat || !game;
+  $("swapSeat").disabled = !seat;
+  const valid = customs.filter(validQ).length;
+  $("customCount").textContent = valid ? valid + (valid === 1 ? " pergunta criada por vocês." : " perguntas criadas por vocês.") : "";
+  $("addBtn").disabled = !salaRef;
+  const row = $("resetRow"); row.innerHTML = "";
+  if (confirmReset){
+    row.append(el("span", null, "Zerar o placar e começar de novo?"));
+    const y = el("button", "btn small", "Sim, zerar"); y.type = "button"; y.onclick = resetGame;
+    const c = el("button", "btn ghost small", "Cancelar"); c.type = "button"; c.onclick = () => { confirmReset = false; renderCfg(); };
+    row.append(y, c);
+  } else {
+    const b = el("button", "btn ghost small", "Começar um jogo novo"); b.type = "button"; b.id = "resetBtn";
+    b.disabled = !game; b.onclick = () => { confirmReset = true; renderCfg(); };
+    row.append(b);
+  }
+  const extras = sala ? false : true;
+  $("addBox").hidden = extras; $("histBox").hidden = extras; $("cfgBox").hidden = extras;
+}
+
+function render(){
+  const t = tally();
+  renderScore(t); renderStage(); renderHist(t); renderCfg(); renderPresence();
+}
+
+// ----- ações -----
+function setPresence(){
+  if (presenceRef){ presenceRef.onDisconnect().cancel(); presenceRef.remove().catch(() => {}); presenceRef = null; }
+  if (!salaRef || !seat || !online) return;
+  presenceRef = salaRef.child("presenca/" + seat);
+  presenceRef.onDisconnect().remove();
+  presenceRef.set(Date.now()).catch(() => {});
+}
+function chooseSeat(s, name){
+  seat = s; store.set("sintonia-seat-" + sala, s);
+  if (name) pendingName = name;
+  setPresence();
+  partnerOnline = !!presencaVal[other(s)];
+  render();
+  flushName();
+}
+async function flushName(){
+  if (!pendingName || !game || !gameRef || !seat) return;
+  const n = pendingName.slice(0, 24); pendingName = null;
+  if (n === nome(seat)) return;
+  try { await gameRef.update({ ["nomes/" + seat]: n }); } catch(e){ toast("Não deu pra salvar o nome. Tente de novo em Ajustes."); }
+}
+async function answer(i){
+  if (busy || !game || !gameRef) return;
+  const r = game.rodada, R = game.rodadas && game.rodadas[rk(r)];
+  if (!R || (R.resp && R.resp[seat] != null)) return;
+  busy = true; render();
+  try { await gameRef.update({ ["rodadas/" + rk(r) + "/resp/" + seat]: i }); }
+  catch(e){ toast("A resposta não foi salva. Toque de novo."); }
+  busy = false; render();
+}
+async function next(){
+  if (busy || !game || !gameRef) return;
+  const r = game.rodada + 1;
+  busy = true; render();
+  try { await gameRef.update({ rodada: r, ["rodadas/" + rk(r) + "/q"]: pickFor(r, game) }); }
+  catch(e){ toast("Não deu pra avançar. Tente de novo."); }
+  busy = false; render();
+}
+async function createGame(nomes){
+  if (creating || !gameRef) return; creating = true;
+  const g = { nomes: nomes || { a: "Jogador 1", b: "Jogador 2" }, seed: Math.floor(Math.random() * 1e9), rodada: 1, rodadas: {} };
+  g.rodadas[rk(1)] = { q: pickFor(1, g) };
+  try { await gameRef.set(g); } catch(e){ toast("Não deu pra criar o jogo. Recarregue a página."); }
+  creating = false;
+}
+async function resetGame(){
+  confirmReset = false;
+  await createGame({ a: nome("a"), b: nome("b") });
+  toast("Jogo novo começou.");
+}
+let nudgeLock = false;
+function nudge(btn){
+  if (!salaRef || nudgeLock) return;
+  nudgeLock = true; btn.disabled = true;
+  salaRef.child("cutucar/" + other(seat)).set(Date.now()).then(() => toast("Cutucada enviada.")).catch(() => toast("A cutucada não saiu."));
+  setTimeout(() => { nudgeLock = false; const b = $("nudgeBtn"); if (b) b.disabled = false; }, 5000);
+}
+function nudged(){
+  toast(nome(other(seat)) + " te cutucou. Responde aí!");
+  const card = $("roundCard");
+  if (card){ card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake"); }
+  try { navigator.vibrate && navigator.vibrate(200); } catch(e){}
+}
+
+$("myName").addEventListener("change", e => { const v = e.target.value.trim(); if (v){ pendingName = v; flushName(); } });
+$("swapSeat").onclick = () => {
+  if (presenceRef){ presenceRef.onDisconnect().cancel(); presenceRef.remove().catch(() => {}); presenceRef = null; }
+  seat = null; store.set("sintonia-seat-" + sala, null); render(); window.scrollTo({ top: 0, behavior: "smooth" });
+};
+document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", () => {
+  const sobre = $("tipoO").checked;
+  $("tipoHint").textContent = sobre ? "Escreva {nome} onde entra o nome de quem responde a verdade. Ex.: Qual a cor favorita de {nome}? O jogo alterna entre vocês." : "Os dois respondem e torcem para escolher a mesma coisa.";
+  $("qTexto").placeholder = sobre ? "Qual a série favorita de {nome}?" : "Onde foi nosso primeiro beijo?";
+}));
+$("addForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!salaRef) return;
+  const opcoes = ["o1", "o2", "o3", "o4"].map(id => $(id).value.trim()).filter(Boolean);
+  const texto = $("qTexto").value.trim();
+  if (!texto || opcoes.length < 2){ toast("Escreva a pergunta e pelo menos duas opções."); return; }
+  const tipo = $("tipoO").checked ? "sobre" : "sintonia";
+  $("addBtn").disabled = true;
+  try {
+    await salaRef.child("perguntas").push({ tipo, texto: texto.slice(0, 160), opcoes: opcoes.map(o => o.slice(0, 60)), criada: Date.now() });
+    ["qTexto", "o1", "o2", "o3", "o4"].forEach(id => $(id).value = "");
+    toast("Pergunta adicionada. Ela entra nas próximas rodadas.");
+  } catch(err){ toast("Não deu pra salvar a pergunta. Tente de novo."); }
+  $("addBtn").disabled = false;
+});
+
+// ----- conexão com o Firebase -----
+function stop(){
+  listeners.forEach(f => f()); listeners = [];
+  if (presenceRef){ presenceRef.onDisconnect().cancel(); presenceRef.remove().catch(() => {}); presenceRef = null; }
+  salaRef = gameRef = null; game = null; customs = []; partnerOnline = null; conn = "loading"; presencaVal = {}; nudgeBase = null;
+}
+function on(ref, fn, err){ ref.on("value", fn, err); listeners.push(() => ref.off("value", fn)); }
+
+function boot(){
+  stop();
+  sala = salaFromHash(); loadSeat();
+  render();
+  if (!sala) return;
+  if (!window.firebase){ conn = "off"; render(); return; }
+  if (!fdb){ firebase.initializeApp({ databaseURL: DB_URL }); fdb = firebase.database(); }
+  salaRef = fdb.ref("salas/" + sala);
+  gameRef = salaRef.child("jogo");
+  bootAt = Date.now();
+  const slow = setTimeout(() => { if (!game){ conn = "slow"; render(); } }, 10000);
+  listeners.push(() => clearTimeout(slow));
+
+  on(fdb.ref(".info/connected"), s => { online = !!s.val(); if (online) setPresence(); });
+  on(gameRef, snap => {
+    clearTimeout(slow);
+    const d = snap.val();
+    if (!d){ conn = "ok"; createGame(); return; }
+    conn = "ok";
+    if (typeof d.rodada === "number") game = d;
+    render(); flushName();
+  }, () => { clearTimeout(slow); conn = "off"; render(); });
+  on(salaRef.child("perguntas"), s => {
+    const v = s.val() || {};
+    customs = Object.entries(v).map(([id, q]) => Object.assign({}, q, { id: "c_" + id }));
+    renderCfg();
+  });
+  on(salaRef.child("presenca"), s => {
+    presencaVal = s.val() || {};
+    partnerOnline = seat ? !!presencaVal[other(seat)] : null;
+    renderPresence();
+  });
+  on(salaRef.child("cutucar"), s => {
+    const v = s.val() || {};
+    const t = seat ? Number(v[seat]) || 0 : 0;
+    if (nudgeBase === null){ nudgeBase = t; lastNudge = t; return; }
+    if (t && t > lastNudge){ lastNudge = t; nudged(); }
+  });
+}
+window.addEventListener("hashchange", boot);
+boot();
+</script>
+</body>
+</html>
