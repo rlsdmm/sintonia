@@ -275,7 +275,79 @@ const BANK = [
   {id:"o11",tipo:"sobre",texto:"Qual app {nome} mais usa?",opcoes:["WhatsApp","Instagram","TikTok","YouTube"]},
   {id:"o12",tipo:"sobre",texto:"Qual presente deixaria {nome} mais feliz?",opcoes:["Uma viagem","Algo feito à mão","Roupa ou tênis","Um jantar especial"]},
   {id:"o13",tipo:"sobre",texto:"No karaokê, {nome} cantaria...",opcoes:["Uma sofrência","Um clássico dos anos 80","Um pop do momento","Nem a pau"]},
-  {id:"o14",tipo:"sobre",texto:"Num dia perfeito, que horas {nome} acordaria?",opcoes:["Antes das 7","Lá pelas 9","Depois das 11","Só depois do almoço"]}
+  {id:"o14",tipo:"sobre",texto:"Num dia perfeito, que horas {nome} acordaria?",opcoes:["Antes das 7","Lá pelas 9","Depois das 11","Só depois do almoço"]},
+  {id:"s15",tipo:"sintonia",texto:"Qual seria nosso restaurante de sempre?",opcoes:["Japonês","Hamburgueria","Italiano","Self-service por quilo"]},
+  {id:"s16",tipo:"sintonia",texto:"Num dia de chuva, a gente...",opcoes:["Fica embaixo da coberta","Faz um bolo","Joga alguma coisa","Dorme a tarde toda"]},
+  {id:"s17",tipo:"sintonia",texto:"Nosso casamento dos sonhos seria...",opcoes:["Festão com a família toda","Pé na areia","Só nós dois e as testemunhas","Fugir e casar escondido"]},
+  {id:"s18",tipo:"sintonia",texto:"Que tipo de série a gente maratona junto?",opcoes:["Crime e mistério","Comédia","Reality show","Dorama"]},
+  {id:"s19",tipo:"sintonia",texto:"Se a gente abrisse um negócio juntos, seria...",opcoes:["Cafeteria","Pousada","Food truck","Loja online"]},
+  {id:"s20",tipo:"sintonia",texto:"Sobremesa favorita pra dividir:",opcoes:["Brigadeiro de panela","Pudim","Sorvete","Petit gâteau"]},
+  {id:"s21",tipo:"sintonia",texto:"Qual seria nosso esporte de casal?",opcoes:["Caminhada","Academia juntos","Bike","Ir do sofá pra cama"]},
+  {id:"s22",tipo:"sintonia",texto:"Num show, a gente estaria...",opcoes:["Grudado na grade","No meio da galera","No camarote","Em casa, vendo pela TV"]},
+  {id:"s23",tipo:"sintonia",texto:"Nosso jeito de fazer as pazes depois de uma briga:",opcoes:["Conversar na hora","Um abraço sem dizer nada","Comida resolve","Dormir e acordar de boa"]},
+  {id:"s24",tipo:"sintonia",texto:"Chegando numa cidade nova, a primeira coisa que a gente faz é...",opcoes:["Procurar o que comer","Ir no ponto turístico","Andar sem rumo","Descansar no hotel"]},
+  {id:"s25",tipo:"sintonia",texto:"Na nossa festa, a pista ia ferver com...",opcoes:["Forró","Hits dos anos 2000","Funk","Sertanejo universitário"]},
+  {id:"s26",tipo:"sintonia",texto:"Nossa casa ideal tem...",opcoes:["Varanda com rede","Cozinha enorme","Quintal com piscina","Um quarto só pra jogos"]},
+  {id:"s27",tipo:"sintonia",texto:"Se a gente fosse uma dupla de filme, seria...",opcoes:["Detetives","Ladrões charmosos","Cientistas malucos","Casal de comédia romântica"]},
+  {id:"s28",tipo:"sintonia",texto:"Nosso programa de sexta à noite:",opcoes:["Delivery e filme","Sair com os amigos","Jantar fora","Dormir cedo, sem vergonha"]},
+  {id:"s29",tipo:"sintonia",texto:"Uma viagem curta pra esse fim de semana:",opcoes:["A praia mais perto","Cidade histórica","Pousada no mato","Nenhuma, férias em casa"]},
+  {id:"s30",tipo:"sintonia",texto:"Se a gente entrasse num reality, seria de...",opcoes:["Culinária","Sobrevivência","Casais","Reforma de casa"]},
+  {id:"s31",tipo:"sintonia",texto:"Lanche da madrugada perfeito:",opcoes:["Miojo","Pão com ovo","Resto da pizza","Bolacha recheada"]},
+  {id:"s32",tipo:"sintonia",texto:"Como a gente comemora um aniversário de namoro?",opcoes:["Jantar especial","Viagem","Presente surpresa","Repetir o primeiro date"]},
+  {id:"s33",tipo:"sintonia",texto:"O nome do nosso próximo pet seria...",opcoes:["Nome de comida","Nome de gente","Nome de personagem","Nome de jogador de futebol"]},
+  {id:"s34",tipo:"sintonia",texto:"No supermercado, o carrinho sempre termina com...",opcoes:["Besteira fora da lista","Só o necessário","Muita fruta","Cerveja e salgadinho"]},
+  {id:"s35",tipo:"sintonia",texto:"Natal ideal pra nós dois:",opcoes:["Com a família toda","Só nós dois","Viajando","De pijama vendo filme"]},
+  {id:"s36",tipo:"sintonia",texto:"Se a gente tivesse um canal, seria de...",opcoes:["Receitas","Viagens","Games","Vlog do dia a dia"]},
+  {id:"s37",tipo:"sintonia",texto:"No parque de diversões, a gente vai primeiro na...",opcoes:["Montanha-russa","Roda-gigante","Casa do terror","Barraca de comida"]},
+  {id:"s38",tipo:"sintonia",texto:"Qual frase tem mais a nossa cara?",opcoes:["Deixa que eu pago","Só mais um episódio","Tô com fome","Hoje a gente dorme cedo (mentira)"]},
+  {id:"s39",tipo:"sintonia",texto:"Nosso jogo de tabuleiro favorito:",opcoes:["Uno","Banco Imobiliário","Jogo da Vida","Detetive"]},
+  {id:"s40",tipo:"sintonia",texto:"Num restaurante chique, a gente pede...",opcoes:["O prato do chef","O mais barato do cardápio","Entrada, prato e sobremesa","Tudo pra dividir"]},
+  {id:"s41",tipo:"sintonia",texto:"Pra brindar, a gente pede...",opcoes:["Espumante","Caipirinha","Vinho","Refri mesmo"]},
+  {id:"s42",tipo:"sintonia",texto:"Num dia inteiro de folga juntos, a gente...",opcoes:["Não faz nada, e é isso","Passeia pela cidade","Cozinha algo caprichado","Arruma a casa"]},
+  {id:"s43",tipo:"sintonia",texto:"Se a gente pudesse voltar no tempo juntos, iria pra...",opcoes:["Os anos 80","A época dos dinossauros","A Idade Média","O dia em que a gente se conheceu"]},
+  {id:"s44",tipo:"sintonia",texto:"Qual seria nosso hobby novo?",opcoes:["Cerâmica","Dança de salão","Jardinagem","Aprender um idioma"]},
+  {id:"s45",tipo:"sintonia",texto:"Em casa, a gente funciona melhor...",opcoes:["Um cozinha, o outro lava","Na faxina de sábado","Cuidando das plantas","Montando móvel (com briga)"]},
+  {id:"s46",tipo:"sintonia",texto:"O que nunca falta na nossa geladeira?",opcoes:["Refrigerante","Queijo","Chocolate","Água gelada, e só"]},
+  {id:"s47",tipo:"sintonia",texto:"Qual seria a trilha sonora do nosso filme?",opcoes:["Balada romântica","Rock animado","Música de comédia","Bossa nova"]},
+  {id:"s48",tipo:"sintonia",texto:"Como a gente acorda num sábado?",opcoes:["Cedo e cheio de planos","Tarde e com preguiça","Um acorda, o outro dorme","Com fome"]},
+  {id:"s49",tipo:"sintonia",texto:"Numa viagem surpresa, a gente preferia...",opcoes:["Neve","Deserto","Ilha paradisíaca","Cidade grande lá fora"]},
+  {id:"s50",tipo:"sintonia",texto:"Qual seria nosso apelido de dupla?",opcoes:["Os Inseparáveis","Casal Pipoca","Dupla Dinâmica","Os Dorminhocos"]},
+  {id:"o15",tipo:"sobre",texto:"Qual comida {nome} não come de jeito nenhum?",opcoes:["Jiló","Fígado","Quiabo","Come de tudo"]},
+  {id:"o16",tipo:"sobre",texto:"Como {nome} fica quando está doente?",opcoes:["Vira um bebê manhoso","Finge que está tudo bem","Dorme o dia inteiro","Pesquisa os sintomas na internet"]},
+  {id:"o17",tipo:"sobre",texto:"Que tipo de filme {nome} vê mil vezes sem cansar?",opcoes:["Comédia","Romance","Ação","Animação"]},
+  {id:"o18",tipo:"sobre",texto:"Qual o lado da cama de {nome}?",opcoes:["Esquerdo","Direito","O meio, espaçoso(a)","Tanto faz"]},
+  {id:"o19",tipo:"sobre",texto:"Se {nome} ganhasse mil reais agora, gastaria com...",opcoes:["Comida","Roupa","Guardaria tudo","Um presente pra alguém"]},
+  {id:"o20",tipo:"sobre",texto:"O que {nome} faz quando está estressado(a)?",opcoes:["Come","Dorme","Faz exercício","Desabafa com alguém"]},
+  {id:"o21",tipo:"sobre",texto:"Qual sobremesa {nome} escolheria?",opcoes:["Chocolate","Pudim","Sorvete","Torta de limão"]},
+  {id:"o22",tipo:"sobre",texto:"No cinema, {nome} sempre...",opcoes:["Compra pipoca grande","Chega atrasado(a)","Comenta o filme todo","Dorme no meio"]},
+  {id:"o23",tipo:"sobre",texto:"Qual o tipo de viagem favorito de {nome}?",opcoes:["Praia","Montanha","Cidade histórica","Parque de diversões"]},
+  {id:"o24",tipo:"sobre",texto:"Quanto tempo {nome} leva pra se arrumar?",opcoes:["5 minutos","Meia hora","Uma hora","Depende muito"]},
+  {id:"o25",tipo:"sobre",texto:"Quando criança, {nome} sonhava em ser...",opcoes:["Astronauta","Famoso(a)","Veterinário(a)","Jogador(a) de futebol"]},
+  {id:"o26",tipo:"sobre",texto:"Que música {nome} ouve escondido?",opcoes:["Sofrência","Música de criança","Funk das antigas","Trilha de novela"]},
+  {id:"o27",tipo:"sobre",texto:"Como {nome} prefere o café?",opcoes:["Puro e forte","Com leite","Bem doce","Não toma café"]},
+  {id:"o28",tipo:"sobre",texto:"Qual a pior mania de {nome} no celular?",opcoes:["Áudio de 5 minutos","Visualizar e não responder","Emoji demais","Bateria sempre em 1%"]},
+  {id:"o29",tipo:"sobre",texto:"Que matéria {nome} mais gostava na escola?",opcoes:["Matemática","Português","Educação física","O recreio"]},
+  {id:"o30",tipo:"sobre",texto:"Numa festa, {nome} é quem...",opcoes:["Dança a noite toda","Fica perto da comida","Conversa com todo mundo","Quer ir embora cedo"]},
+  {id:"o31",tipo:"sobre",texto:"O que {nome} pede no hambúrguer?",opcoes:["Bacon extra","Só carne e queijo","Tudo que tiver","O vegetariano"]},
+  {id:"o32",tipo:"sobre",texto:"Qual o maior vício de {nome}?",opcoes:["Chocolate","Café","Celular","Série"]},
+  {id:"o33",tipo:"sobre",texto:"Como {nome} encara filme de terror?",opcoes:["Ama","Assiste tapando os olhos","Não assiste nem pago(a)","Ri dos sustos"]},
+  {id:"o34",tipo:"sobre",texto:"Qual seria o carro dos sonhos de {nome}?",opcoes:["Esportivo","Caminhonete","Fusca reformado","Elétrico"]},
+  {id:"o35",tipo:"sobre",texto:"O que {nome} mais gosta de ganhar de surpresa?",opcoes:["Comida","Flores","Um bilhetinho","Um abraço do nada"]},
+  {id:"o36",tipo:"sobre",texto:"Qual o ponto fraco de {nome}?",opcoes:["Doce","Cócegas","Bichinho fofo","Sono"]},
+  {id:"o37",tipo:"sobre",texto:"Numa discussão, {nome}...",opcoes:["Fala tudo na hora","Fica em silêncio","Precisa de um tempo","Começa a rir"]},
+  {id:"o38",tipo:"sobre",texto:"Que superpoder {nome} escolheria?",opcoes:["Voar","Ficar invisível","Ler mentes","Teletransporte"]},
+  {id:"o39",tipo:"sobre",texto:"Qual o prato que {nome} faz melhor?",opcoes:["Macarrão","Ovo frito","Bolo","Pede delivery"]},
+  {id:"o40",tipo:"sobre",texto:"No fim de semana, {nome} prefere...",opcoes:["Sair","Ficar em casa","Visitar a família","Viajar"]},
+  {id:"o41",tipo:"sobre",texto:"O que {nome} faz antes de dormir?",opcoes:["Celular até tarde","Lê um pouco","Vê série","Apaga na hora"]},
+  {id:"o42",tipo:"sobre",texto:"Qual destas {nome} nunca faria?",opcoes:["Pular de paraquedas","Comer inseto","Cantar em público","Raspar o cabelo"]},
+  {id:"o43",tipo:"sobre",texto:"Qual a cor favorita de {nome}?",opcoes:["Azul","Preto","Verde","Rosa ou roxo"]},
+  {id:"o44",tipo:"sobre",texto:"Que tipo de presente {nome} costuma dar?",opcoes:["Útil","Engraçado","Romântico","Esquece a data"]},
+  {id:"o45",tipo:"sobre",texto:"Que fruta {nome} mais gosta?",opcoes:["Manga","Morango","Uva","Melancia"]},
+  {id:"o46",tipo:"sobre",texto:"Como {nome} gosta de passar o aniversário?",opcoes:["Festão","Jantar com poucos","Viajando","Sem ninguém lembrar"]},
+  {id:"o47",tipo:"sobre",texto:"Se uma barata voasse agora, {nome}...",opcoes:["Grita e corre","Mata na hora","Chama alguém","Finge que não viu"]},
+  {id:"o48",tipo:"sobre",texto:"No trânsito, {nome} é...",opcoes:["Calmo(a), cantando","Bravo(a) com todo mundo","Quem dorme no carona","Quem fica no celular no carona"]},
+  {id:"o49",tipo:"sobre",texto:"Que dança {nome} arrisca numa festa?",opcoes:["Forró","Funk","Valsa","Nenhuma, fica parado(a)"]},
+  {id:"o50",tipo:"sobre",texto:"O que {nome} mais valoriza num relacionamento?",opcoes:["Confiança","Bom humor","Companheirismo","Carinho"]}
 ];
 // Pacote picante: só entra no sorteio quando os dois liberam
 const SPICY = [
@@ -308,9 +380,29 @@ const SPICY = [
   {id:"p27",tipo:"sobre",texto:"O que {nome} acha mais sexy na outra pessoa?",opcoes:["Confiança","Bom humor","Cuidado e carinho","Pegada firme"]},
   {id:"p28",tipo:"sobre",texto:"Pra uma noite especial, {nome} escolheria...",opcoes:["Motel temático","Hotel com vista","Em casa, tudo preparado","Acampar sob as estrelas"]},
   {id:"p29",tipo:"sobre",texto:"Depois que o clima esquenta, {nome} costuma...",opcoes:["Pedir mais","Apagar na hora","Ficar abraçadinho(a)","Sentir fome"]},
-  {id:"p30",tipo:"sobre",texto:"Qual elogio mais mexe com {nome}?",opcoes:["Você é lindo(a)","Você me deixa louco(a)","Adoro seu cheiro","Ninguém me entende como você"]}
+  {id:"p30",tipo:"sobre",texto:"Qual elogio mais mexe com {nome}?",opcoes:["Você é lindo(a)","Você me deixa louco(a)","Adoro seu cheiro","Ninguém me entende como você"]},
+  {id:"p31",tipo:"sintonia",texto:"Nossa noite perfeita começa com...",opcoes:["Um jantar a dois","Um banho demorado","Uma dança na sala","Uma mensagem provocante à tarde"]},
+  {id:"p32",tipo:"sintonia",texto:"Que peça de roupa um rouba do outro pra dormir?",opcoes:["Camiseta","Moletom","Camisa social","Nenhuma, dorme sem"]},
+  {id:"p33",tipo:"sintonia",texto:"Um lugar que a gente ainda quer estrear:",opcoes:["Banheira de hotel","Rede na varanda","Chalé com lareira","Barraca de camping"]},
+  {id:"p34",tipo:"sintonia",texto:"O que combina mais com a gente?",opcoes:["Carinho lento","Pegada forte","Brincadeira e risada","Um pouco de tudo"]},
+  {id:"p35",tipo:"sintonia",texto:"Fim de semana sem ninguém em casa, a gente...",opcoes:["Nem sai do quarto","Faz piquenique na sala","Toma banho de banheira","Vê um filme... por 10 minutos"]},
+  {id:"p36",tipo:"sintonia",texto:"Um jogo que esquenta a gente:",opcoes:["Verdade ou desafio","Cartas com prenda","Massagem com regras","Dado de casal"]},
+  {id:"p37",tipo:"sintonia",texto:"Longe um do outro, a maior saudade é...",opcoes:["Do cheiro","Do abraço","Do beijo","De dormir juntinho"]},
+  {id:"p38",tipo:"sintonia",texto:"Uma ousadia que a gente toparia:",opcoes:["Foto ousada no meio do expediente","Beijo escondido no elevador","Sair sem roupa de baixo","Bilhete safado na bolsa"]},
+  {id:"p39",tipo:"sintonia",texto:"Qual cenário tem mais a nossa cara?",opcoes:["Lençol branco e janela aberta","Luz vermelha e música alta","Chuva lá fora e cobertor","Espelho no teto"]},
+  {id:"p40",tipo:"sintonia",texto:"Depois de muito tempo longe, o reencontro é...",opcoes:["Beijo ainda no portão","Direto pro quarto","Jantar e depois...","Abraço de 5 minutos"]},
+  {id:"p41",tipo:"sobre",texto:"Onde {nome} se arrepia com um toque?",opcoes:["Nuca","Orelha","Costas","Parte de dentro do braço"]},
+  {id:"p42",tipo:"sobre",texto:"O que {nome} queria ouvir mais vezes?",opcoes:["Você está lindo(a)","Tô com saudade","Você é muito gostoso(a)","Eu te amo"]},
+  {id:"p43",tipo:"sobre",texto:"Que roupa da outra pessoa {nome} acha mais sexy?",opcoes:["Camiseta velha","Roupa de academia","Roupa social","Roupa de dormir"]},
+  {id:"p44",tipo:"sobre",texto:"Que tipo de toque {nome} prefere?",opcoes:["Leve, de arrepiar","Firme","Cafuné","Arranhãozinho"]},
+  {id:"p45",tipo:"sobre",texto:"Qual destas {nome} gostaria de tentar?",opcoes:["Venda nos olhos","Banho de espuma a dois","Uma dança só pra você","Dado de casal"]},
+  {id:"p46",tipo:"sobre",texto:"Quando quer namorar, {nome} dá o sinal com...",opcoes:["Um olhar","Um beijo no pescoço","Uma indireta","Uma mensagem bem direta"]},
+  {id:"p47",tipo:"sobre",texto:"Que parte do corpo da outra pessoa {nome} mais gosta?",opcoes:["Boca","Olhos","Mãos","Costas"]},
+  {id:"p48",tipo:"sobre",texto:"Onde {nome} acha mais gostoso dormir juntinho?",opcoes:["Cama de lençol novo","Rede","Sofá, de conchinha","Barraca sob as estrelas"]},
+  {id:"p49",tipo:"sobre",texto:"{nome} prefere ser acordado(a) com...",opcoes:["Beijinho","Café na cama","Carinho que vira outra coisa","Deixa dormir!"]},
+  {id:"p50",tipo:"sobre",texto:"Numa noite a dois, {nome} prefere o ritmo...",opcoes:["Devagarzinho","Intenso","Começa lento e acelera","Depende do clima"]}
 ].map(q => Object.assign(q, { picante: true }));
-const RODADAS = 10; // rodadas por partida
+const RODADAS = 30; // rodadas por partida (eram 10 até 20/11/2026)
 
 const DB_URL = "https://sintonia-a-dois-default-rtdb.firebaseio.com";
 const $ = id => document.getElementById(id);
@@ -336,7 +428,7 @@ let busy = false, creating = false, pendingName = null, confirmReset = false;
 let presenceRef = null, lastNudge = 0, bootAt = Date.now();
 let listeners = [];
 let presencaVal = {}, nudgeBase = null;
-let minhas = [], picante = {}, historico = [], savedIds = new Set();
+let minhas = [], picante = {}, historico = [], savedIds = new Set(), vistas = {};
 let storySig = "", mineSig = "";
 
 function loadSeat(){ const s = sala && store.get("sintonia-seat-" + sala); seat = (s === "a" || s === "b") ? s : null; }
@@ -383,6 +475,9 @@ function deck(seed){
   const pool = spicyOn() ? BANK.concat(SPICY) : BANK;
   const s = shuffled(pool.filter(q => q.tipo === "sintonia"), seed), o = shuffled(pool.filter(q => q.tipo === "sobre"), seed + 7);
   const mix = []; for (let i = 0; i < Math.max(s.length, o.length); i++){ if (s[i]) mix.push(s[i]); if (o[i]) mix.push(o[i]); }
+  // as que vocês nunca viram vêm primeiro; depois as vistas há mais tempo
+  const vt = q => Number(vistas[q.id]) || 0;
+  mix.sort((x, y) => vt(x) - vt(y));
   return ms.concat(cs, mix);
 }
 function pickFor(r, g){
@@ -401,6 +496,13 @@ function pickFor(r, g){
   return out;
 }
 function totalOf(g){ return Number(g && g.total) > 0 ? Number(g.total) : RODADAS; }
+// partida antiga (de 10) ainda em andamento passa a ir até RODADAS, gravado no jogo; se já tinha acabado, fica como estava
+function esticar(d){
+  const t = Number(d.total) || 0; if (!(t > 0 && t < RODADAS) || !gameRef) return;
+  const R = (d.rodadas || {})[rk(d.rodada)], resp = (R && R.resp) || {};
+  if (d.rodada >= t && resp.a != null && resp.b != null) return;
+  gameRef.child("total").set(RODADAS).catch(() => {});
+}
 function isOver(){
   if (!game || game.rodada < totalOf(game)) return false;
   const R = (game.rodadas || {})[rk(game.rodada)], resp = (R && R.resp) || {};
@@ -806,15 +908,20 @@ async function next(){
   if (busy || !game || !gameRef) return;
   const r = game.rodada + 1;
   busy = true; render();
-  try { await gameRef.update({ rodada: r, ["rodadas/" + rk(r) + "/q"]: pickFor(r, game) }); }
+  const q = pickFor(r, game);
+  try { await gameRef.update({ rodada: r, ["rodadas/" + rk(r) + "/q"]: q }); marcarVista(q); }
   catch(e){ toast("Não deu pra avançar. Tente de novo."); }
   busy = false; render();
+}
+function marcarVista(q){
+  if (!salaRef || !q || typeof q.id !== "string" || !/^[A-Za-z0-9_-]{1,40}$/.test(q.id)) return;
+  salaRef.child("vistas/" + q.id).set(Date.now()).catch(() => {});
 }
 async function createGame(nomes){
   if (creating || !gameRef) return; creating = true;
   const g = { id: salaRef.child("historico").push().key, total: RODADAS, nomes: nomes || { a: "Jogador 1", b: "Jogador 2" }, seed: Math.floor(Math.random() * 1e9), rodada: 1, rodadas: {} };
   g.rodadas[rk(1)] = { q: pickFor(1, g) };
-  try { await gameRef.set(g); } catch(e){ toast("Não deu pra criar o jogo. Recarregue a página."); }
+  try { await gameRef.set(g); marcarVista(g.rodadas[rk(1)].q); } catch(e){ toast("Não deu pra criar o jogo. Recarregue a página."); }
   creating = false;
 }
 async function resetGame(){
@@ -872,7 +979,7 @@ function stop(){
   listeners.forEach(f => f()); listeners = [];
   if (presenceRef){ presenceRef.onDisconnect().cancel(); presenceRef.remove().catch(() => {}); presenceRef = null; }
   salaRef = gameRef = null; game = null; customs = []; partnerOnline = null; conn = "loading"; presencaVal = {}; nudgeBase = null;
-  minhas = []; picante = {}; historico = []; savedIds = new Set(); storySig = ""; mineSig = "";
+  minhas = []; picante = {}; historico = []; savedIds = new Set(); vistas = {}; storySig = ""; mineSig = "";
 }
 function on(ref, fn, err){ ref.on("value", fn, err); listeners.push(() => ref.off("value", fn)); }
 
@@ -895,7 +1002,7 @@ function boot(){
     const d = snap.val();
     if (!d){ conn = "ok"; createGame(); return; }
     conn = "ok";
-    if (typeof d.rodada === "number") game = d;
+    if (typeof d.rodada === "number"){ game = d; esticar(d); }
     render(); flushName();
   }, () => { clearTimeout(slow); conn = "off"; render(); });
   on(salaRef.child("perguntas"), s => {
@@ -914,6 +1021,7 @@ function boot(){
     picante = { a: v.a === true, b: v.b === true };
     renderPicante();
   });
+  on(salaRef.child("vistas"), s => { const v = s.val(); vistas = v && typeof v === "object" ? v : {}; });
   on(salaRef.child("historico"), s => {
     const v = s.val() || {};
     historico = Object.entries(v).filter(([, h]) => h && typeof h === "object").map(([k, h]) => Object.assign({}, h, { k }));
